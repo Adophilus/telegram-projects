@@ -1,19 +1,22 @@
-from src.helpers.classes import RecursiveNamespace
+from collections import namedtuple
 from telethon.sync import TelegramClient
 import json
 
-def loadConfig (config_path = "../.env"):
+def loadConfig (config_path = "./.env"):
     with open(config_path, "r") as fh:
-        return RecursiveNamespace(**json.load(fh))
+        return json.loads(fh.read(), object_hook=lambda d: namedtuple('Config', d.keys())(*d.values()))
 
-def getClient (account):
+
+async def getClient (account):
     client = TelegramClient(account.phone, account.api.id, account.api.hash)
-    client.connect()
+    await client.connect()
 
-    if not (client.is_user_authorized()):
-        client.send_code_request(account.phone)
-        client.sign_in(account.phone, input("Enter code:"))
+    if not (await client.is_user_authorized()):
+        await client.send_code_request(account.phone)
+        await client.sign_in(account.phone, input("Enter code:"))
+    
+    return client
 
-def sendMessage (client, recepient, message):
-    client.sendMessage(recepient, message)
+async  def sendMessage (client, recepient, message):
+    return await client.send_message(recepient, message)
 
