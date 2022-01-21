@@ -1,13 +1,15 @@
-# Massive NFT Giveway Coming Up #
+**Massive NFT Giveway Coming Up**
 
-Hello {user["username"]},
+Hello @{username},
 
-_BillionaireNFT_ is an upcoming NFT collection, who aims to be one of the mainstream NFT collections. We were able to partner with them for a massive upcoming NFT drop.
+__BillionaireNFT__ is an upcoming NFT collection, who aims to be one of the mainstream NFT collections. We were able to partner with them for a massive upcoming NFT drop.
 
-### RULES
+**RULES**
+
 - You have to be a member of the CryptoNFT channel (as that's where updates about the NFT drop will be communicated)
-- You have to fill in the form @ {form_url}
+
+- You have to fill in the [Registration Form]({formUrl})
 
 Use the form below to indicate your interest in the NFT drop.
 
-{form_url}
+{formUrl}

@@ -6,6 +6,9 @@ def loadConfig (config_path = "./.env"):
     with open(config_path, "r") as fh:
         return json.loads(fh.read(), object_hook=lambda d: namedtuple('Config', d.keys())(*d.values()))
 
+def loadFile (file_path):
+    with open(file_path, "r") as fh:
+        return fh.read()
 
 async def getClient (account):
     client = TelegramClient(account.phone, account.api.id, account.api.hash)
