@@ -8,6 +8,7 @@ async def test_send_message ():
     config = test_load_config()
 
     message = loadFile("templates/spreading_awareness.md").format(
+        config=config,
         username=config.accounts[1].username,
         formUrl="https://google.com"
     )
