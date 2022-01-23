@@ -20,6 +20,12 @@ async def getClient (account):
     
     return client
 
+async def getChats (client):
+    return await client.get_dialogs()
+
+async def getMembers (client, group):
+    return await client.get_participants(group, aggressive=True)
+
 async  def sendMessage (client, recepient, message):
     return await client.send_message(recepient, message)
 
