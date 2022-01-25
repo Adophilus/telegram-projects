@@ -55,7 +55,6 @@ async def main ():
             if (chat.entity.title != config.channels[0].name):
                 print(f"Processing: {chat.entity.title}")
                 await processEntity(client, chat.entity)
-                break
 
     await client.disconnect()
 
