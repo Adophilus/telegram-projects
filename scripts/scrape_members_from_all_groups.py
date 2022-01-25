@@ -60,7 +60,9 @@ async def main ():
 
 try:
     loop = asyncio.get_running_loop()
+    # loop.create_task(main())
+    asyncio.run_coroutine_threadsafe(main(), loop)
 except RuntimeError:
     loop = asyncio.new_event_loop()
+    loop.run_until_complete(main())
 
-loop.run_until_complete(main())
