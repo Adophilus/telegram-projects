@@ -36,9 +36,10 @@ async def processEntity (client, entity):
     data = members
 
     # file_path = path.join("res", "groups", f"group-{str(counter).zfill(4)}.json")
-    file_path = path.join("res", "groups", f"{group.id}-{group.name}.json")
+    file_path = path.join("res", "groups", f"{entity.id}-{entity.name}.json")
 
     print("Saving file...")
+
     with open(file_path, "w") as fh:
         json.dump(data, fh)
 
