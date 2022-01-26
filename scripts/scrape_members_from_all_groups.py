@@ -82,7 +82,7 @@ async def main ():
                     }
                 })
                 
-                logging.info(f"Processed: {entity.title}")
+                logging.info(f"Processed: {chat.entity.title}")
 
     with open(path.join("res", "logs", res_id, "overview_report.json"), "w") as fh:
         json.dump(entities, fh)
