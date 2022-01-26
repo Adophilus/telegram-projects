@@ -3,7 +3,9 @@ from telethon.tl.types import User
 from os import path
 import asyncio
 import json
+import logging
 
+logging.basicConfig(level=logging.DEBUG)
 config = loadConfig()
 
 counter = 0
@@ -12,8 +14,9 @@ async def processEntity (client, entity):
     _members = await getMembers(client, entity)
     members = []
     
-    print("Processing members...")
+    logging.info("Processing members...")
 
+    c = 0
     for member in _members:
         if (not member.is_self):
             members.append({
@@ -23,6 +26,7 @@ async def processEntity (client, entity):
                 "username": member.username,
                 "phone": member.phone
             })
+            c += 1
 
     """
     data = {
@@ -39,7 +43,7 @@ async def processEntity (client, entity):
     # file_path = path.join("res", "groups", f"group-{str(counter).zfill(4)}.json")
     file_path = path.join("res", "groups", f"{entity.id}-{entity.title}.json")
 
-    print("Saving file...")
+    logging.info("Saving file...")
 
     with open(file_path, "w") as fh:
         json.dump(data, fh)
@@ -47,13 +51,13 @@ async def processEntity (client, entity):
 async def main ():
     client = await getClient(config.accounts[1])
     
-    print("Fetching chats...")
+    logging.info("Fetching chats...")
     chats = await getChats(client)
 
     for chat in chats:
         if (not isinstance(chat.entity, User)):
             if (chat.entity.title != config.channels[0].name):
-                print(f"Processing: {chat.entity.title}")
+                logging.info(f"Processing: {chat.entity.title}")
                 await processEntity(client, chat.entity)
 
     await client.disconnect()
