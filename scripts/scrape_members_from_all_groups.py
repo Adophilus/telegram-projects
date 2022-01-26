@@ -6,21 +6,22 @@ from os import mkdir, path
 import asyncio
 import json
 import logging
+import logging.config
 
-logging.basicConfig(level=logging.INFO)
-config = loadConfig()
 
-entities = []
 res_id = datetime.strftime(datetime.now(), "%Y-%m-%d")
 
-def checkDirs ():
-    folder = path.join("res", "groups", res_id)
-    if (not path.isdirectory(folder)):
-        mkdir(folder)
+folder = path.join("res", "groups", res_id)
+if (not path.isdir(folder)):
+    mkdir(folder)
 
-    folder = path.join("res", "logs", res_id)
-    if (not path.isdirectory(folder)):
-        mkdir(folder)
+folder = path.join("res", "logs", res_id)
+if (not path.isdir(folder)):
+    mkdir(folder)
+
+logging.config.fileConfig(fname=".loggingrc", disable_existing_loggers=False)
+config = loadConfig()
+entities = []
 
 async def processEntity (client, entity):
     try:
@@ -30,8 +31,6 @@ async def processEntity (client, entity):
         logging.warning(f"{entity.title} could not be processed. Reason: not allowed to fetch subscribers")
         return [ False, 0 ]
 
-    checkDirs()
-    
     c = 0
     for member in _members:
         if (not member.is_self):
