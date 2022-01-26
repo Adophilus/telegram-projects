@@ -77,7 +77,7 @@ async def main ():
                 entities.append({
                     "title": chat.entity.title,
                     "participants": {
-                        "present": chat.entity.participants_present,
+                        "present": chat.entity.participants_count,
                         "processed": processed
                     }
                 })
