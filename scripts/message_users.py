@@ -53,9 +53,16 @@ async def main():
     for user in users:
         user = await processUser(user)
         logging.info(f"Sending message to: {user['unique']}")
-        await sendMessage(
-            client, user["unique"], messaging_template.format(config=config, user=user)
-        )
+        try:
+            await sendMessage(
+                client,
+                user["unique"],
+                messaging_template.format(config=config, user=user),
+            )
+        except Exception:
+            logging.warning(
+                f"Error occurred while sending message to: {user['unique']}"
+            )
 
     await client.disconnect()
 
