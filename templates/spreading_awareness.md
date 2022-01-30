@@ -1,6 +1,6 @@
 **Massive NFT Giveway Coming Up**
 
-Hello @{username},
+Hello {user["ref"]},
 
 [BillionaireNFT]({config.collections[0]}) is an upcoming NFT collection, who aims to be one of the mainstream NFT collections. We were able to partner with them for a massive upcoming NFT drop.
 
