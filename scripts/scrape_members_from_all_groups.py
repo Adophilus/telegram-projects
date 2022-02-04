@@ -10,14 +10,15 @@ import logging.config
 
 
 res_id = datetime.strftime(datetime.now(), "%Y-%m-%d")
+folder = {}
 
-folder = path.join("res", "groups", res_id)
-if (not path.isdir(folder)):
-    mkdir(folder)
+folder["groups"] = path.join("res", "groups", res_id)
+if (not path.isdir(folder["groups"])):
+    mkdir(folder["groups"])
 
-folder = path.join("res", "logs", res_id)
-if (not path.isdir(folder)):
-    mkdir(folder)
+folder["logs"] = path.join("res", "logs", res_id)
+if (not path.isdir(folder["logs"])):
+    mkdir(folder["logs"])
 
 logging.config.fileConfig(fname=".loggingrc", disable_existing_loggers=False)
 config = loadConfig()
@@ -43,22 +44,10 @@ async def processEntity (client, entity):
             })
             c += 1
 
-    """
-    data = {
-        "entity": {
-            "id": entity.id,
-            "title": entity.title,
-            "username": entity.username
-        },
-        "members": members
-    }
-    """
-    data = members
-
-    file_path = path.join("res", "groups", res_id, f"{entity.id}-{entity.title}.json")
+    file_path = path.join(folder["groups"], f"{entity.id}-{entity.title}.json")
 
     with open(file_path, "w") as fh:
-        json.dump(data, fh)
+        json.dump(members, fh)
 
     return [ True, c ]
 
@@ -84,7 +73,7 @@ async def main ():
                 
                 logging.info(f"Processed: {chat.entity.title}")
 
-    with open(path.join("res", "logs", res_id, "overview_report.json"), "w") as fh:
+    with open(path.join(folder["logs"], "overview_report.json"), "w") as fh:
         json.dump(entities, fh)
 
     await client.disconnect()
