@@ -2,30 +2,39 @@ from collections import namedtuple
 from telethon.sync import TelegramClient
 import json
 
-def loadConfig (config_path = "./.env"):
-    with open(config_path, "r") as fh:
-        return json.loads(fh.read(), object_hook=lambda d: namedtuple('Config', d.keys())(*d.values()))
 
-def loadFile (file_path):
+def loadConfig(config_path="./.env"):
+    with open(config_path, "r") as fh:
+        return json.loads(
+            fh.read(), object_hook=lambda d: namedtuple("Config", d.keys())(*d.values())
+        )
+
+
+def loadFile(file_path):
     with open(file_path, "r") as fh:
         return fh.read()
 
-async def getClient (account):
+
+async def getClient(account):
     client = TelegramClient(account.phone, account.api.id, account.api.hash)
     await client.connect()
 
     if not (await client.is_user_authorized()):
         await client.send_code_request(account.phone)
-        await client.sign_in(account.phone, input("Enter code:"))
-    
+        await client.sign_in(
+            account.phone, input(f"Enter code for {account.username}: ")
+        )
+
     return client
 
-async def getChats (client):
+
+async def getChats(client):
     return await client.get_dialogs()
 
-async def getMembers (client, group):
+
+async def getMembers(client, group):
     return await client.get_participants(group, aggressive=True)
 
-async  def sendMessage (client, recepient, message):
-    return await client.send_message(recepient, message)
 
+async def sendMessage(client, recepient, message):
+    return await client.send_message(recepient, message)
