@@ -1,4 +1,4 @@
-from tests.unit import test_load_config
+from tests.unit import test_load_config as loadConfig
 from TelegramProjects.helpers.functions import (
     loadConfig,
     loadFile,
@@ -8,6 +8,7 @@ from TelegramProjects.helpers.functions import (
     sendMessage,
 )
 from telethon.tl.types import User
+from telethon.errors import FloodWaitError
 import asyncio
 import pytest
 
@@ -21,7 +22,7 @@ async def initClient(account):
 
 @pytest.mark.asyncio
 async def test_initClients():
-    config = test_load_config()
+    config = loadConfig()
 
     for account in config.accounts:
         client = await initClient(account)
@@ -31,7 +32,7 @@ async def test_initClients():
 
 @pytest.mark.asyncio
 async def test_sendMessage():
-    config = test_load_config()
+    config = loadConfig()
     message = loadFile("templates/test.md").format(
         config=config, username=config.accounts[1].username
     )
@@ -43,7 +44,7 @@ async def test_sendMessage():
 
 @pytest.mark.asyncio
 async def test_getChats():
-    config = test_load_config()
+    config = loadConfig()
     client = await initClient(config.accounts[1])
     chats = await getChats(client)
 
@@ -52,7 +53,7 @@ async def test_getChats():
 
 @pytest.mark.asyncio
 async def test_getGroupOrChannel():
-    config = test_load_config()
+    config = loadConfig()
     client = await initClient(config.accounts[0])
     chats = sorted(
         filter(
@@ -63,20 +64,38 @@ async def test_getGroupOrChannel():
         ),
         key=lambda c: c.title,
     )
-    members = await getMembers(client, chats[0])
+
+    try:
+        members = await getMembers(client, chats[0])
+    except Exception as e:
+        # print(exceptions[0])
+        for r in e.result:
+            if (r):
+                print(r)
+        await asyncio.sleep(35)
+        members = await getMembers(client, chats[0])
 
     await client.disconnect()
 
 
 @pytest.mark.asyncio
 async def test_getChats():
-    config = test_load_config()
-
+    config = loadConfig()
     client = await initClient(config.accounts[0])
-    chats = await getChats(client)
-    for chat in chats:
-        if not isinstance(chat.entity, User):
-            if chat.entity.participants_count:
-                members = await getMembers(client, chat.entity)
+    chats = sorted(
+        filter(
+            lambda chat: (
+                (not (isinstance(chat.entity, User)) and chat.entity.participants_count)
+            ),
+            await getChats(client),
+        ),
+        key=lambda c: c.title,
+    )
+
+    try:
+        members = [ await getMembers(client, chat) for chat in chats ]
+    except FloodWaitError as e:
+        print(var(e))
+        # members = [ await getMembers(client, chat) for chat in chats ]
 
     await client.disconnect()
