@@ -59,9 +59,9 @@ async def main():
                 user["unique"],
                 messaging_template.format(config=config, user=user),
             )
-        except Exception:
+        except Exception as e:
             logging.warning(
-                f"Error occurred while sending message to: {user['unique']}"
+                f"Error occurred while sending message to: {user['unique']}. {e}"
             )
 
     await client.disconnect()

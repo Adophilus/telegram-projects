@@ -5,10 +5,11 @@ from TelegramProjects.helpers.functions import (
     getChats,
     getClient,
     getMembers,
+    handleMultiError,
     sendMessage,
 )
 from telethon.tl.types import User
-from telethon.errors import FloodWaitError
+from telethon import errors
 import asyncio
 import pytest
 
@@ -20,6 +21,7 @@ async def initClient(account):
     return client
 
 
+@pytest.mark.skip
 @pytest.mark.asyncio
 async def test_initClients():
     config = loadConfig()
@@ -30,6 +32,7 @@ async def test_initClients():
         await client.disconnect()
 
 
+@pytest.mark.skip
 @pytest.mark.asyncio
 async def test_sendMessage():
     config = loadConfig()
@@ -42,6 +45,7 @@ async def test_sendMessage():
     await client.disconnect()
 
 
+@pytest.mark.skip
 @pytest.mark.asyncio
 async def test_getChats():
     config = loadConfig()
@@ -51,6 +55,7 @@ async def test_getChats():
     await client.disconnect()
 
 
+@pytest.mark.skip
 @pytest.mark.asyncio
 async def test_getGroupOrChannel():
     config = loadConfig()
@@ -65,15 +70,15 @@ async def test_getGroupOrChannel():
         key=lambda c: c.title,
     )
 
+    async def _():
+        return await getMembers(client, chats[0])
+
     try:
         members = await getMembers(client, chats[0])
-    except Exception as e:
-        # print(exceptions[0])
-        for r in e.result:
-            if (r):
-                print(r)
-        await asyncio.sleep(35)
-        members = await getMembers(client, chats[0])
+    except errors.common.MultiError as e:
+        members = await handleMultiError(e.exceptions, _)
+    except errors.FloodWaitError as e:
+        members = await handleMultiError([e], _)
 
     await client.disconnect()
 
@@ -92,10 +97,21 @@ async def test_getChats():
         key=lambda c: c.title,
     )
 
+    c = 0
+    members = []
+
+    async def _():
+        return [await getMembers(client, chat) for chat in chats[c:]]
+
     try:
-        members = [ await getMembers(client, chat) for chat in chats ]
-    except FloodWaitError as e:
-        print(var(e))
-        # members = [ await getMembers(client, chat) for chat in chats ]
+        for i in range(len(chats)):
+            members.append(await getMembers(client, chats[i]))
+            c = i
+    except errors.common.MultiError as e:
+        await handleMultiError(e.exceptions, _)
+    except errors.FloodWaitError as e:
+        await handleMultiError([e], _)
+
+    print(members)
 
     await client.disconnect()
