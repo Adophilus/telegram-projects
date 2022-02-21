@@ -19,13 +19,16 @@ logging.config.fileConfig(fname=".loggingrc", disable_existing_loggers=False)
 
 parser = argparse.ArgumentParser(description="Sends messages to user")
 parser.add_argument(
+    "--account", metavar="account", type=str, help="ID of operating account"
+)
+parser.add_argument(
     "--template", metavar="path", type=str, help="Path to message template"
 )
 parser.add_argument("--users", metavar="path", type=str, help="Path to users.json")
 
 args = parser.parse_args()
 
-if not args.template and args.users:
+if not args.template and args.users and args.account:
     parser.print_help()
     exit()
 
@@ -45,7 +48,7 @@ async def processUser(user):
 
 
 async def main():
-    client = await getClient(config.accounts[0])
+    client = await getClient(config.accounts[args.account])
 
     with open(args.users, "r") as fh:
         users = json.load(fh)

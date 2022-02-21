@@ -10,11 +10,24 @@ from telethon import errors
 from telethon.tl.types import User
 from datetime import datetime
 from os import mkdir, path
+import argparse
 import asyncio
 import json
 import logging
 import logging.config
 
+parser = argparse.ArgumentParser(
+    description="Scrapes all members from channels and groups account is in"
+)
+parser.add_argument(
+    "--account", metavar="account", type=int, help="ID of operating account"
+)
+
+args = parser.parse_args()
+
+if not (args.account):
+    parser.print_help()
+    exit()
 
 res_id = datetime.strftime(datetime.now(), "%Y-%m-%d")
 folder = {}
@@ -73,7 +86,7 @@ async def processEntity(client, entity):
 
 
 async def main():
-    client = await getClient(config.accounts[1])
+    client = await getClient(config.accounts[args.account])
 
     logging.info("Fetching chats...")
     chats = await getChats(client)
