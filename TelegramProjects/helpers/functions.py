@@ -1,6 +1,8 @@
 from collections import namedtuple
 from telethon.sync import TelegramClient
+import asyncio
 import json
+from telethon import errors
 
 
 def loadConfig(config_path="./.env"):
@@ -38,3 +40,19 @@ async def getMembers(client, group):
 
 async def sendMessage(client, recepient, message):
     return await client.send_message(recepient, message)
+
+
+async def handleMultiError(_errors, _callback):
+    _errors = filter(None, _errors)
+    _sleep_timeout = 0
+    for _error in _errors:
+        if isinstance(_error, errors.FloodWaitError):
+            if _error.seconds > _sleep_timeout:
+                _sleep_timeout = _error.seconds
+    await asyncio.sleep(_sleep_timeout)
+    try:
+        return await _callback()
+    except errors.common.MultiError as e:
+        return await handleMultiError(e.exceptions, _callback)
+    except errors.FloodWaitError as e:
+        return await handleMultiError([e], _callback)
