@@ -53,10 +53,10 @@ async def processEntity(client, entity):
 
     try:
         _members = await getMembers(client, entity)
-    except errors.common.MultiError as e:
-        _members = await handleMultiError(e.exceptions, _)
-    except errors.FloodWaitError as e:
-        _members = await handleMultiError([e], _)
+        # except errors.common.MultiError as e:
+        # _members = await handleMultiError(e.exceptions, _)
+        # except errors.FloodWaitError as e:
+        # _members = await handleMultiError([e], _)
     except errors.rpcerrorlist.ChatAdminRequiredError:
         logging.warning(
             f"{entity.title} could not be processed. Reason: not allowed to fetch subscribers"
