@@ -19,7 +19,7 @@ logging.config.fileConfig(fname=".loggingrc", disable_existing_loggers=False)
 
 parser = argparse.ArgumentParser(description="Sends messages to user")
 parser.add_argument(
-    "--account", metavar="account", type=str, help="ID of operating account"
+    "--account", metavar="account", type=int, help="ID of operating account"
 )
 parser.add_argument(
     "--template", metavar="path", type=str, help="Path to message template"
