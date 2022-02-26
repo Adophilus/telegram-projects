@@ -64,6 +64,7 @@ async def main():
                 messaging_template.format(config=config, user=user),
             )
             logging.info(f"Processed user #{c}")
+            c += 1
         except Exception as e:
             logging.warning(
                 f"Error occurred while sending message to: {user['unique']}. {e}"
