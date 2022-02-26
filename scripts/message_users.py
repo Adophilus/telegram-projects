@@ -55,6 +55,7 @@ async def main():
 
     c = 0
     for user in users:
+        await asyncio.sleep(60 * 5)
         user = await processUser(user)
         logging.info(f"Sending message to: {user['unique']}")
         try:
@@ -69,7 +70,6 @@ async def main():
             logging.warning(
                 f"Error occurred while sending message to: {user['unique']}. {e}"
             )
-
     await client.disconnect()
 
     logging.info("All done!")
