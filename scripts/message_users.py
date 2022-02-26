@@ -53,6 +53,7 @@ async def main():
     with open(args.users, "r") as fh:
         users = json.load(fh)
 
+    c = 0
     for user in users:
         user = await processUser(user)
         logging.info(f"Sending message to: {user['unique']}")
@@ -62,6 +63,7 @@ async def main():
                 user["unique"],
                 messaging_template.format(config=config, user=user),
             )
+            logging.info(f"Processed user #{c}")
         except Exception as e:
             logging.warning(
                 f"Error occurred while sending message to: {user['unique']}. {e}"
