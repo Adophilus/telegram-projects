@@ -55,7 +55,8 @@ async def main():
 
     c = 0
     for user in users:
-        await asyncio.sleep(60 * 5)
+        if (c % 10) == 0:
+            await asyncio.sleep(60 * 5)
         user = await processUser(user)
         logging.info(f"Sending message to: {user['unique']}")
         try:
