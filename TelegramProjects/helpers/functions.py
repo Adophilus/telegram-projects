@@ -39,7 +39,8 @@ async def getMembers(client, group):
 
 
 async def sendMessage(client, recepient, message):
-    return await client.send_message(recepient, message)
+    recepient = await client.get_input_entity(peer=recepient)
+    return await client.send_message(entity=recepient, message=message)
 
 
 async def handleMultiError(_errors, _callback):
