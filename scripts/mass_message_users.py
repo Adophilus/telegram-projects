@@ -41,7 +41,7 @@ timeout = 60
 
 async def main():
     clients = [await getClient(account) for account in config.accounts]
-    stats_file = os.path.join(stats_folder, "stats.txt")
+    stats_file = os.path.join(args.stats_folder, "stats.txt")
     account = 0
 
     with open(args.users, "r") as fh:
