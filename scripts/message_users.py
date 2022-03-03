@@ -35,18 +35,6 @@ if not (args.account and args.template and args.users):
 messaging_template = loadFile(args.template)
 
 
-async def processUser(user):
-    user["ref"] = "Bud"
-    if user["username"]:
-        user["unique"] = user["username"]
-        user["ref"] = f"@{user['username']}"
-    elif user["phone"]:
-        user["unique"] = user["phone"]
-    elif user["id"]:
-        user["unique"] = user["id"]
-    return user
-
-
 async def main():
     client = None
 
@@ -62,17 +50,19 @@ async def main():
         users = json.load(fh)
 
     for user in users:
-        user = await processUser(user)
-        logging.info(f"Sending message to: {user['unique']}")
+        logging.info(f"Sending message to: {user['username']}")
         try:
             await sendMessage(
                 client,
-                user["unique"],
-                messaging_template.format(config=config, user=user),
+                user["username"],
+                messaging_template.format(
+                    config=config, sender=args.account, user=user
+                ),
             )
+            await client.delete_dialog(user["username"])
         except Exception as e:
             logging.warning(
-                f"Error occurred while sending message to: {user['unique']}. {e}"
+                f"Error occurred while sending message to: {user['username']}. {e}"
             )
 
     await client.disconnect()

@@ -2,6 +2,7 @@ from collections import namedtuple
 from telethon.sync import TelegramClient
 import asyncio
 import json
+import os
 from telethon import errors
 
 
@@ -17,8 +18,10 @@ def loadFile(file_path):
         return fh.read()
 
 
-async def getClient(account):
-    client = TelegramClient(account.phone, account.api.id, account.api.hash)
+async def getClient(account, sessions_folder="./sessions"):
+    client = TelegramClient(
+        os.path.join(sessions_folder, account.phone), account.api.id, account.api.hash
+    )
     await client.connect()
 
     if not (await client.is_user_authorized()):
@@ -39,8 +42,7 @@ async def getMembers(client, group):
 
 
 async def sendMessage(client, recepient, message):
-    recepient = await client.get_input_entity(peer=recepient)
-    return await client.send_message(entity=recepient, message=message)
+    return await client.send_message(recepient, message=message)
 
 
 async def handleMultiError(_errors, _callback):
