@@ -75,9 +75,12 @@ async def main():
 
             if not (has_skipped):
                 if last_user:
-                    if user == last_user:
+                    if user["username"] == last_user:
                         has_skipped = True
+                    logging.info(f"skipping {user['username']}")
                     continue
+                else:
+                    has_skipped = True
 
             last_user = user["username"]
             logging.info(f"Sending message to: {user['username']}")
@@ -97,7 +100,7 @@ async def main():
                 await asyncio.sleep(e.seconds)
 
             if (i % 24) == 0:
-                logging.info(f"Periodic Sleeping for {timeout}")
+                logging.info(f"Periodic sleep (for {timeout})")
                 await asyncio.sleep(timeout)
 
             stats_fh.seek(0, os.SEEK_SET)
