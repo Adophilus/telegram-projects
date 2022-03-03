@@ -93,15 +93,15 @@ async def main():
                 )
                 await client.delete_dialog(user["username"])
                 logging.info(f"Sent message to {user['username']} ({i+1}/{len(users)})")
+            except errors.rpcerrorlist.PeerFloodError:
+                logging.warning(f"PeerFloodError on {user['username']}")
             except errors.FloodWaitError as e:
-                logging.warning(
-                    f"FloodWaitError while processing: {user['username']}. Sleeping for {e.seconds}"
-                )
+                logging.warning(f"FloodWaitError on {user['username']} for {e.seconds}")
                 await asyncio.sleep(e.seconds)
 
-            if (i % 24) == 0:
-                logging.info(f"Periodic sleep (for {timeout})")
-                await asyncio.sleep(timeout)
+            # if (i % 24) == 0:
+            logging.info(f"Periodic sleep (for {timeout} seconds)")
+            await asyncio.sleep(timeout)
 
             stats_fh.seek(0, os.SEEK_SET)
             stats_fh.write(last_user)
