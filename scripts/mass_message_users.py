@@ -95,6 +95,8 @@ async def main():
                 logging.info(f"Sent message to {user['username']} ({i+1}/{len(users)})")
             except errors.rpcerrorlist.PeerFloodError:
                 logging.warning(f"PeerFloodError on {user['username']}")
+            except ValueError:
+                logging.warning(f"UsernameNotOccupiedError on {user['username']}")
             except errors.rpcerrorlist.UsernameNotOccupiedError:
                 logging.warning(f"UsernameNotOccupiedError on {user['username']}")
             except errors.FloodWaitError as e:
