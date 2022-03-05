@@ -45,6 +45,10 @@ async def sendMessage(client, recepient, message):
     return await client.send_message(recepient, message=message)
 
 
+async def sendMedia(client, recepient, media_path, *args, **kwargs):
+    return await client.send_file(recepient, media_path, *args, **kwargs)
+
+
 async def handleMultiError(_errors, _callback):
     _errors = filter(None, _errors)
     _sleep_timeout = 0

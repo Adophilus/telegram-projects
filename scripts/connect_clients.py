@@ -4,7 +4,16 @@ import asyncio
 
 async def main():
     config = loadConfig()
-    clients = [await getClient(account) for account in config.accounts]
+    clients = []
+
+    for account in config.accounts:
+        try:
+            clients.append(await getClient(account))
+        except RuntimeError:
+            break
+        except Exception as e:
+            print(f"failed to get client for {account.username}")
+            print(e)
 
     if all(clients):
         print("Connected clients!")
