@@ -122,7 +122,7 @@ async def main():
                     )
                     await asyncio.sleep(e.seconds)
 
-                if (i % len(config.accounts)) == 0:
+                if ((i + 1) % len(config.accounts)) == 0:
                     logging.info(f"Periodic sleep (for {timeout} seconds)")
                     await asyncio.sleep(timeout)
 
