@@ -114,6 +114,8 @@ async def main():
                     logging.warning(f"PeerFloodError on {user['username']}")
                 except ValueError:
                     logging.warning(f"UsernameNotOccupiedError on {user['username']}")
+                except errors.rpcerrorlist.UsernameInvalidError:
+                    logging.warning(f"UsernameInvalidError on {user['username']}")
                 except errors.rpcerrorlist.UsernameNotOccupiedError:
                     logging.warning(f"UsernameNotOccupiedError on {user['username']}")
                 except errors.FloodWaitError as e:
