@@ -124,7 +124,6 @@ async def main():
                     logging.warning(
                         f"FloodWaitError on {user['username']} for {e.seconds}"
                     )
-                    await asyncio.sleep(e.seconds)
 
                 if ((i + 1) % len(config.accounts)) == 0:
                     logging.info(f"Periodic sleep (for {timeout} seconds)")
