@@ -44,8 +44,10 @@ if not (args.template and args.users and args.stats_folder):
     parser.print_help()
     exit()
 
-if (args.media and (not os.path.isfile(args.media))):
+if args.media and (not os.path.isfile(args.media)):
     logging.warning("Media file does not exist!")
+    parser.print_help()
+    exit()
 
 messaging_template = loadFile(args.template)
 timeout = 60
@@ -101,14 +103,14 @@ async def main():
                         messaging_template.format(config=config, user=user),
                     )
 
-                    if (args.media):
+                    if args.media:
                         await sendMedia(
                             client,
                             user["username"],
                             args.media,
                             attributes=(DocumentAttributeVideo(0, 0, 0),),
                         )
-                    
+
                     await client.delete_dialog(user["username"])
                     logging.info(
                         f"Sent message to {user['username']} ({i+1}/{len(users)})"
