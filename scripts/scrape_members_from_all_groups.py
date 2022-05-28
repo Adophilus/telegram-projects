@@ -10,9 +10,8 @@ import logging.config
 
 
 res_id = datetime.strftime(datetime.now(), "%Y-%m-%d")
-folder = {}
+folder = {"groups": path.join("res", "groups", res_id)}
 
-folder["groups"] = path.join("res", "groups", res_id)
 if (not path.isdir(folder["groups"])):
     mkdir(folder["groups"])
 
@@ -51,27 +50,28 @@ async def processEntity (client, entity):
 
     return [ True, c ]
 
-async def main ():
+async def main():
     client = await getClient(config.accounts[1])
-    
+
     logging.info("Fetching chats...")
     chats = await getChats(client)
 
     for chat in chats:
-        if (not isinstance(chat.entity, User)):
-            if (chat.entity.title != config.channels[0].name):
-                logging.info(f"Processing: {chat.entity.title}")
+        if (not isinstance(chat.entity, User)) and (
+            chat.entity.title != config.channels[0].name
+        ):
+            logging.info(f"Processing: {chat.entity.title}")
 
-                (status, processed) = await processEntity(client, chat.entity)
-                entities.append({
-                    "title": chat.entity.title,
-                    "participants": {
-                        "present": chat.entity.participants_count,
-                        "processed": processed
-                    }
-                })
-                
-                logging.info(f"Processed: {chat.entity.title}")
+            (status, processed) = await processEntity(client, chat.entity)
+            entities.append({
+                "title": chat.entity.title,
+                "participants": {
+                    "present": chat.entity.participants_count,
+                    "processed": processed
+                }
+            })
+
+            logging.info(f"Processed: {chat.entity.title}")
 
     with open(path.join(folder["logs"], "overview_report.json"), "w") as fh:
         json.dump(entities, fh)
